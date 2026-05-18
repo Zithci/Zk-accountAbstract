@@ -44,18 +44,17 @@ contract ZkMinimalAccountTest is Test {
         transaction.value = 0;
         transaction.data = "";
 
-        // PAKE HASH MANUAL UNTUK TESTING (Menghindari error precompile di lingkungan lokal)
+        // PAKE HASH MURNI (Menghindari kerumitan amplop standar di testing lokal)
         bytes32 mockHash = keccak256("zk-minimal-account-mock-hash");
-        bytes32 ethSignedMessageHash = MessageHashUtils.toEthSignedMessageHash(mockHash);
 
-        // Tanda tangan di atas hash yang sudah dibungkus
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ownerKey, ethSignedMessageHash);
+        // Tanda tangan di atas hash murni
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(ownerKey, mockHash);
         transaction.signature = abi.encodePacked(r, s, v);
 
         // ACT
         vm.prank(BOOTLOADER_FORMAL_ADDRESS);
-        // Kita kirim ethSignedMessageHash sebagai suggested hash
-        bytes4 magic = minimalAccount.validateTransaction(mockHash, ethSignedMessageHash, transaction);
+        // Kirim mockHash sebagai suggested hash agar sinkron dengan recovery di contract
+        bytes4 magic = minimalAccount.validateTransaction(mockHash, mockHash, transaction);
 
         // ASSERT
         assertEq(magic, ACCOUNT_VALIDATION_SUCCESS_MAGIC);

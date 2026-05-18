@@ -78,15 +78,10 @@ contract ZkMinimalAccount is IAccount, Ownable {
      * @return magic The validation success magic number.
      */
     function validateTransaction(
-        bytes32, /* _txHash (unused formality) */
+        bytes32, /* _txHash */
         bytes32 _suggestedSignedHash,
         Transaction calldata _transaction
-    )
-        external
-        payable
-        requireFromBootloader
-        returns (bytes4 magic)
-    {
+    ) external payable requireFromBootloader returns (bytes4 magic) {
         return _validateTransaction(_suggestedSignedHash, _transaction);
     }
 
@@ -98,11 +93,7 @@ contract ZkMinimalAccount is IAccount, Ownable {
         bytes32, /* _txHash */
         bytes32, /* _suggestedSignedHash */
         Transaction calldata _transaction
-    )
-        external
-        payable
-        requireFromBootloaderOrOwner
-    {
+    ) external payable requireFromBootloaderOrOwner {
         _executeTransaction(_transaction);
     }
 
@@ -120,11 +111,7 @@ contract ZkMinimalAccount is IAccount, Ownable {
         bytes32, /* _txHash */
         bytes32, /* _suggestedSignedHash */
         Transaction calldata _transaction
-    )
-        external
-        payable
-        requireFromBootloader
-    {
+    ) external payable requireFromBootloader {
         bool success = _transaction.payToTheBootloader();
         if (!success) {
             revert ZkMinimalAccount__FailedToPayBootloader();
@@ -138,11 +125,7 @@ contract ZkMinimalAccount is IAccount, Ownable {
         bytes32, /* _txHash */
         bytes32, /* _suggestedSignedHash */
         Transaction calldata _transaction
-    )
-        external
-        payable
-        requireFromBootloader
-    {
+    ) external payable requireFromBootloader {
         // Future paymaster implementation
     }
 
@@ -165,11 +148,9 @@ contract ZkMinimalAccount is IAccount, Ownable {
             abi.encodeCall(INonceHolder.incrementMinNonceIfEquals, (_transaction.nonce)) // Message
         );
 
-        /* wrap the hash so its aligned with eth standard */
-        bytes32 ethSignedMessageHash = MessageHashUtils.toEthSignedMessageHash(_suggestedSignedHash);
-
         // 2. Recover signer from signature using ECDSA
-        address signer = ECDSA.recover(ethSignedMessageHash, _transaction.signature);
+        // We use _suggestedSignedHash directly as it is already formatted by the bootloader
+        address signer = ECDSA.recover(_suggestedSignedHash, _transaction.signature);
 
         // 3. Final authorization decision
         if (signer != owner()) {

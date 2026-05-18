@@ -23,9 +23,9 @@ jobs:
           submodules: recursive
 
       - name: Install Foundry zkSync
-        run: |
-          curl -L https://raw.githubusercontent.com/matter-labs/foundry-zksync/main/install-foundry-zksync | bash
-          foundryup-zksync
+        uses: matter-labs/foundry-zksync-toolchain@v1
+        with:
+          version: latest
 
       - name: Show Forge version
         run: forge --version

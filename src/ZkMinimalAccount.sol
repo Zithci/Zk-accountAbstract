@@ -81,7 +81,12 @@ contract ZkMinimalAccount is IAccount, Ownable {
         bytes32, /* _txHash */
         bytes32 _suggestedSignedHash,
         Transaction calldata _transaction
-    ) external payable requireFromBootloader returns (bytes4 magic) {
+    )
+        external
+        payable
+        requireFromBootloader
+        returns (bytes4 magic)
+    {
         return _validateTransaction(_suggestedSignedHash, _transaction);
     }
 
@@ -93,7 +98,11 @@ contract ZkMinimalAccount is IAccount, Ownable {
         bytes32, /* _txHash */
         bytes32, /* _suggestedSignedHash */
         Transaction calldata _transaction
-    ) external payable requireFromBootloaderOrOwner {
+    )
+        external
+        payable
+        requireFromBootloaderOrOwner
+    {
         _executeTransaction(_transaction);
     }
 
@@ -111,7 +120,11 @@ contract ZkMinimalAccount is IAccount, Ownable {
         bytes32, /* _txHash */
         bytes32, /* _suggestedSignedHash */
         Transaction calldata _transaction
-    ) external payable requireFromBootloader {
+    )
+        external
+        payable
+        requireFromBootloader
+    {
         bool success = _transaction.payToTheBootloader();
         if (!success) {
             revert ZkMinimalAccount__FailedToPayBootloader();
@@ -125,7 +138,11 @@ contract ZkMinimalAccount is IAccount, Ownable {
         bytes32, /* _txHash */
         bytes32, /* _suggestedSignedHash */
         Transaction calldata _transaction
-    ) external payable requireFromBootloader {
+    )
+        external
+        payable
+        requireFromBootloader
+    {
         // Future paymaster implementation
     }
 

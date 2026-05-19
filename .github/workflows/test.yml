@@ -7,25 +7,23 @@ on:
   pull_request:
   workflow_dispatch:
 
-env:
-  FOUNDRY_PROFILE: ci
-
 jobs:
   check:
-    name: Foundry project
+    name: Foundry zkSync project
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
           submodules: recursive
 
-      - name: Install Foundry zkSync
-        uses: matter-labs/foundry-zksync-toolchain@v1
-        with:
-          version: latest
+      - name: Install foundry-zksync
+        run: |
+          mkdir -p ~/.foundry/bin
+          curl -L https://github.com/matter-labs/foundry-zksync/releases/latest/download/foundry_nightly_linux_amd64.tar.gz | tar -xz -C ~/.foundry/bin
+          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
 
       - name: Show Forge version
         run: forge --version

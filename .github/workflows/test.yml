@@ -22,7 +22,7 @@ jobs:
       - name: Install foundry-zksync
         run: |
           mkdir -p ~/.foundry/bin
-          curl -L https://github.com/matter-labs/foundry-zksync/releases/latest/download/foundry_nightly_linux_amd64.tar.gz | tar -xz -C ~/.foundry/bin
+          curl -L https://github.com/matter-labs/foundry-zksync/releases/download/foundry-zksync-v0.1.9/foundry_zksync_v0.1.9_linux_amd64.tar.gz | tar -xz -C ~/.foundry/bin
           echo "$HOME/.foundry/bin" >> $GITHUB_PATH
 
       - name: Show Forge version
